@@ -239,126 +239,32 @@ void ofApp::initGui()
 {
     float guiWidth = 200;
     float guiHeight = 300;
-    guiArea = ofxUIRectangle(30, 175, guiWidth, guiHeight);
-    settingsGui = new ofxUISuperCanvas("SUPER", guiArea);
-    ofColor c(1,100,1,100);
-    settingsGui->setColorBack(c);
     
-    //    mode = new ofxUILabel("Standby", OFX_UI_FONT_MEDIUM);
+	settingsGui.setup("Parameters", "settings.json", 30, 175);
+    ofColor c(1,100,1,100);
+	settingsGui.setBackgroundColor(c);
+    
+    
     
     // the initial parameters values set here are not connected to the initial parameters values on the gvfhandler constructor
     // those are the real initial values. The values here will only take effect once the user changes them
     // (this is inconsistent and should be fixed)
-    settingsGui->addSpacer(guiWidth - 2, 2);
-    settingsGui->addWidgetDown(new ofxUILabel("PARAMETERS", OFX_UI_FONT_MEDIUM));
-    settingsGui->addSpacer(guiWidth - 2, 2);
-    //    settingsGui->addWidgetDown(mode);
-    //    settingsGui->addSpacer(guiWidth - 2, 2);
-    //    settingsGui->addWidgetDown(new ofxUILabel("Precision", OFX_UI_FONT_SMALL));
-    theNumberOfParticlesDialer = new ofxUINumberDialer(10, 10000, 2000, 0, "precision", OFX_UI_FONT_SMALL);
-    settingsGui->addWidgetDown(theNumberOfParticlesDialer);
-    settingsGui->addSpacer(guiWidth - 2, 2);
+ 
+	settingsGui.add(theNumberOfParticlesDialer);
+	settingsGui.add(theToleranceDialer);
+	settingsGui.add(theScalingVarianceDialer);
+	
+	guiListeners.push(theNumberOfParticlesDialer.newListener([&](float& f){
+		mygvf->setNumberOfParticles(f);
+	}));
+	guiListeners.push(theToleranceDialer.newListener([&](float& f){
+		mygvf->setNumberOfParticles(f);
+	}));
+	guiListeners.push(theScalingVarianceDialer.newListener([&](float& f){
+		mygvf->setScalingsVariance(f);
+	}));
+		
     
-    //    settingsGui->addWidgetDown(new ofxUILabel("Resampling", OFX_UI_FONT_SMALL));
-    //    rtNumDialer = new ofxUINumberDialer(100, 10000, 1000, 0, "resampling", OFX_UI_FONT_SMALL);
-    //    settingsGui->addWidgetDown(rtNumDialer);
-    //    //    settingsGui->addSpacer(guiWidth - 2, 2);
-    //
-    //    settingsGui->addWidgetDown(new ofxUILabel("Tolerance", OFX_UI_FONT_SMALL));
-    theToleranceDialer = new ofxUINumberDialer(0.01, 2, 0.12, 2, "tolerance", OFX_UI_FONT_SMALL);
-    settingsGui->addWidgetDown(theToleranceDialer);
-            settingsGui->addSpacer(guiWidth - 2, 2);
-    //
-    //    //    settingsGui->addWidgetDown(new ofxUILabel("", OFX_UI_FONT_SMALL));
-    //    //    settingsGui->addWidgetDown(new ofxUILabel("Variance coefficients", OFX_UI_FONT_SMALL));
-    //    //
-    //    //    settingsGui->addWidgetDown(new ofxUILabel("Position", OFX_UI_FONT_SMALL));
-    //    //    sigPosND = new ofxUINumberDialer(0.000001, 0.1, 0.0001, 6, "position", OFX_UI_FONT_SMALL);
-    //    //    settingsGui->addWidgetDown(sigPosND);
-    //
-    //    settingsGui->addWidgetDown(new ofxUILabel("Speed adaptation", OFX_UI_FONT_SMALL));
-    //    sigSpeedND = new ofxUINumberDialer(0.000001, 0.1, 0.01, 6, "speed adaptation", OFX_UI_FONT_SMALL);
-    //    settingsGui->addWidgetDown(sigSpeedND);
-    //
-        theScalingVarianceDialer = new ofxUINumberDialer(0.000001, 0.1, 0.0001, 6, "scale adaptation", OFX_UI_FONT_SMALL);
-        settingsGui->addWidgetDown(theScalingVarianceDialer);
-    settingsGui->addSpacer(guiWidth - 2, 2);
-
-    float red = 100;
-    settingsGui->addMinimalSlider("GREEN", 0.0, 255.0, &red);
-//    settingsGui->addWidgetDown(theScalingVarianceDialer);
-    settingsGui->addSpacer(guiWidth - 2, 2);
-    //
-    //    settingsGui->addWidgetDown(new ofxUILabel("Rotation adaptation", OFX_UI_FONT_SMALL));
-    //    sigRotND = new ofxUINumberDialer(0.000001, 0.1, 0.000001, 6, "rotation adaptation", OFX_UI_FONT_SMALL);
-    //    settingsGui->addWidgetDown(sigRotND);
-    //
-    //    //    settingsGui->addWidgetDown(new ofxUILabel("", OFX_UI_FONT_SMALL));
-    //    //    settingsGui->addLabelButton("Save gesture(s)", false);
-    //    //    settingsGui->addLabelButton("Load gesture(s)", false);
-    //
-    //    //    settingsGui->addWidgetDown(new ofxUILabel("Sound", OFX_UI_FONT_SMALL));
-    //    //    settingsGui->addToggle("activate", false);
-    //
-    ofAddListener(settingsGui->newGUIEvent, this, &ofApp::guiEvent);
-    
-    
-}
-
-void ofApp::guiEvent(ofxUIEventArgs &e)
-{
-    string name = e.widget->getName();
-    
-    if(name == "precision")
-    {
-        mygvf->setNumberOfParticles(theNumberOfParticlesDialer->getValue());
-    }
-    else if(name == "tolerance")
-    {
-        mygvf->setNumberOfParticles(theToleranceDialer->getValue());
-    }
-    else if(name == "scale adaptation")
-    {
-        mygvf->setScalingsVariance(theScalingVarianceDialer->getValue());
-    }
-//
-//    // if save or load is requested,
-//    // the appropriate dialog is shown and the task is carried out
-//    else if(name == "Save gesture(s)")
-//    {
-//        ofxUILabelButton *button = (ofxUILabelButton*) e.widget;
-//        if(button->getValue() && gvfh.getTemplateCount() > 0)
-//        {
-//            ofFileDialogResult dialogResult = ofSystemSaveDialog("my gestures.xml", "Save gestures");
-//            if(dialogResult.bSuccess)
-//            {
-//                saveGestures(dialogResult);
-//            }
-//        }
-//    }
-//    else if(name == "Load gesture(s)")
-//    {
-//        ofxUILabelButton *button = (ofxUILabelButton*) e.widget;
-//        if(button->getValue())
-//        {
-//            ofFileDialogResult dialogResult = ofSystemLoadDialog("Select the xml file containing gesture data");
-//            if(dialogResult.bSuccess)
-//            {
-//                loadGestures(dialogResult);
-//            }
-//            
-//        }
-//    }
-//    else if(name == "activate")
-//    {
-//        ofxUILabelButton *button = (ofxUILabelButton*) e.widget;
-//        if(button->getValue())
-//        {
-//            cout << button->getValue() << endl;
-//            
-//            
-//        }
-//    }
 }
 
 

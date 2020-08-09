@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxUI.h"
+#include "ofxGui.h"
 #include "ofxGVF.h"
 
 class ofApp : public ofBaseApp{
@@ -22,25 +22,25 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
 
-    void guiEvent(ofxUIEventArgs &e);
+    
     void initGui();
     void initColors();
     void displayParticlesOnGesture(GVFGesture currentGesture);
     
 private:
     std::vector<float> theSample;
-    ofxUISuperCanvas *settingsGui;
+    ofxPanel settingsGui;
     
     // parameters
-    ofxUINumberDialer * theNumberOfParticlesDialer;
-    ofxUINumberDialer * theToleranceDialer;
-    ofxUINumberDialer * theScalingVarianceDialer;
+    ofParameter<float> theNumberOfParticlesDialer = {"precision", 2000, 10, 10000 };
+    ofParameter<float> theToleranceDialer = {"tolerance", 0.12, 0.01, 2 };
+    ofParameter<float> theScalingVarianceDialer = {"scale adaptation", 0.0001, 0.000001, 0.1 };
     
     ofxGVF * mygvf;
     GVFGesture gesture;
     
     ofRectangle drawArea;
-    ofxUIRectangle guiArea;
+    
     std::vector<ofColor> colors;
     
     float scrW, scrH;
@@ -54,4 +54,7 @@ private:
     void drawGesture(float x, float y);
     void drawGesture(float x, float y, float w, float h);
 
+	ofEventListeners guiListeners;
+	
+	
 };
