@@ -1,6 +1,11 @@
 ofxGVF
 ===
 
+### UPDATE: August 8th, 2020
+Updated structure for use as an openFrameworks addon.
+The original PureData and Max/Msp projects are now in the others folder
+
+
 Gesture Variation Follower: c++ library and implementation in various creative programming environments. GVF allows for realtime gesture recognition and variation tracking. 
 <br />
 
